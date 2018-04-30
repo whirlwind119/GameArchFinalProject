@@ -6,7 +6,7 @@ public class Maze : MonoBehaviour {
 
     public int width = 21;
     public int height = 21;
-    public int numExits;
+    public int numExits = 1;
     public Material floorMat;
     public Material mazeMat;
 
