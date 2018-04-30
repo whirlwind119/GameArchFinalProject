@@ -4,36 +4,42 @@ using UnityEngine;
 
 public class Maze : MonoBehaviour {
 
-    public int width = 21;
-    public int height = 21;
-    public int numExits = 1;
-    public Material floorMat;
-    public Material mazeMat;
+    public int _width = 21;
+    public int _height = 21;
+    public int _num_exits = 1;
+    public Material _floor_mat;
+    public Material _maze_mat;
 
     List<List<bool>> grid = new List<List<bool>>();
 
 	// Use this for initialization
-	void Start () {
-		for (int i = 0; i < width; ++i) {
+	void Start () 
+    {
+		for (int i = 0; i < _width; ++i) 
+        {
             List<bool> temp = new List<bool>();
-            for (int j = 0; j < height; ++j) {
+            for (int j = 0; j < _height; ++j) 
+            {
                 temp.Add(false);
             }
             grid.Add(temp);
         }
-        createMaze(width-1, height-1, 0, 0);
+        createMaze(_width-1, _height-1, 0, 0);
         addBorders();
         makeExits();
         constructMesh();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 		
 	}
 
-    void createMaze(int upperx, int uppery, int lowerx, int lowery) {
-        if (upperx - lowerx < 3 || uppery - lowery < 3) {
+    void createMaze(int upperx, int uppery, int lowerx, int lowery) 
+    {
+        if (upperx - lowerx < 3 || uppery - lowery < 3)
+        {
             return;
         }
 
@@ -43,32 +49,38 @@ public class Maze : MonoBehaviour {
         randx = (randx / 2) * 2;
         randy = (randy / 2) * 2;
 
-        for (int i = lowerx; i < upperx; ++i) {
+        for (int i = lowerx; i < upperx; ++i) 
+        {
             grid[i][randy] = true;
         }
 
-        for (int i = lowery; i < uppery; ++i) {
+        for (int i = lowery; i < uppery; ++i) 
+        {
             grid[randx][i] = true;
         }
 
         int dont = Random.Range(0, 4);
 
-        if (dont != 0) {
+        if (dont != 0) 
+        {
             int rand = Random.Range(lowery + 1, randy);
             rand = ((rand / 2) * 2) + 1;
             grid[randx][rand] = false;
         }
-        if (dont != 1) {
+        if (dont != 1)
+        {
             int rand = Random.Range(lowerx + 1, randx);
             rand = ((rand / 2) * 2) + 1;
             grid[rand][randy] = false;
         }
-        if (dont != 2) {
+        if (dont != 2) 
+        {
             int rand = Random.Range(randy+1, uppery);
             rand = ((rand / 2) * 2) + 1;
             grid[randx][rand] = false;
         }
-        if (dont != 3) {
+        if (dont != 3) 
+        {
             int rand = Random.Range(randx+1, upperx);
             rand = ((rand / 2) * 2) + 1;
             grid[rand][randy] = false;
@@ -82,76 +94,108 @@ public class Maze : MonoBehaviour {
     }
 
     void addBorders() {
-
-        for (int i = 0; i < width; ++i) {
+        //add top and bottom borders 
+        for (int i = 0; i < _width; ++i) 
+        {
             grid[i].Insert(0, true);
             grid[i].Add(true);
         }
+
+        //add left and right borders
         List<bool> temp1 = new List<bool>();
         List<bool> temp2 = new List<bool>();
-        for (int i = 0; i < height+2; ++i) {
+        for (int i = 0; i < _height+2; ++i) 
+        {
             temp1.Add(true);
         }
         grid.Insert(0, temp1);
-        for (int i = 0; i < height + 2; ++i) {
+        for (int i = 0; i < _height + 2; ++i) 
+        {
             temp2.Add(true);
         }
         grid.Add(temp2);
-
-
-        width = grid.Count;
-        height = grid[0].Count;
+    
+        _width = grid.Count;
+        _height = grid[0].Count;
     }
     
     void makeExits() {
         int cur_exits = 0;
-        while (cur_exits < numExits+1) {
-            //Vertical
-            if (Random.Range(0, 2) == 0) {
-                if (Random.Range(0, 2) == 0) {
+        //increment _num_exits to account for the entrance
+        while (cur_exits < _num_exits+1) 
+        {
+            //vertical
+            if (Random.Range(0, 2) == 0) 
+            {
+                if (Random.Range(0, 2) == 0) 
+                {
                     
-                    int randy = Random.Range(1, height - 1);
-                    if (grid[1][randy] == true || grid[0][randy] == false || grid[0][randy + 1] == false || grid[0][randy - 1] == false) {
+                    int randy = Random.Range(1, _height - 1);
+                    if (grid[1][randy] == true || 
+                        grid[0][randy] == false || 
+                        grid[0][randy + 1] == false || 
+                        grid[0][randy - 1] == false) 
+                    {
                         continue;
                     }
-                    else {
+                    else 
+                    {
                         grid[0][randy] = false;
                         cur_exits++;
                     }
                     
                 }
-                else {
-                    int randy = Random.Range(1, height - 1);
-                    if (grid[width-2][randy] == true || grid[width-1][randy] == false || grid[width-1][randy + 1] == false || grid[width-1][randy - 1] == false) {
+                else 
+                {
+                    int randy = Random.Range(1, _height - 1);
+                    if (grid[_width-2][randy] == true || 
+                        grid[_width-1][randy] == false || 
+                        grid[_width-1][randy + 1] == false || 
+                        grid[_width-1][randy - 1] == false) 
+                    {
                         continue;
                     }
-                    else {
-                        grid[width-1][randy] = false;
+                    else 
+                    {
+                        grid[_width-1][randy] = false;
                         cur_exits++;
                     }
                 }
                 
             }
-            else {
-                if (Random.Range(0,2) == 0) {
-                    
-                    int randx = Random.Range(1, width - 1);
-                    if(grid[randx][1] == true || grid[randx][0] == false || grid[randx + 1][0] == false || grid[randx-1][0] == false) {
+            //horizontal
+            else 
+            {
+                if (Random.Range(0,2) == 0) 
+                {
+                    int randx = Random.Range(1, _width - 1);
+                    if(grid[randx][1] == true || 
+                        grid[randx][0] == false || 
+                        grid[randx + 1][0] == false || 
+                        grid[randx-1][0] == false) 
+                    {
                         continue;
                     }
-                    else {
+                    else 
+                    {
                         grid[randx][0] = false;
                         cur_exits++;
                     }
                     
                 }
-                else {
-                    int randx = Random.Range(1, width - 1);
-                    if(grid[randx][height-2] == true || grid[randx][height-1] == false || grid[randx + 1][height-1] == false || grid[randx - 1][height-1] == false) {
+                else 
+                {
+                    int randx = Random.Range(1, _width - 1);
+                    if(grid[randx][_height-2] == true || 
+                        grid[randx][_height-1] == false || 
+                        grid[randx + 1][_height-1] == false || 
+                        grid[randx - 1][_height-1] == false) 
+                    {
                         continue;
                     }
-                    else {
-                        grid[randx][height-1] = false;
+                    else 
+                    {
+                        grid[randx][_height-1] = false;
                         cur_exits++;
                     }
                 }
@@ -159,12 +203,16 @@ public class Maze : MonoBehaviour {
         }
     }
 
-    void constructMesh() {
+    void constructMesh() 
+        {
         //count number of walls
         int numWalls = 0;
-        for (int i = 0; i < width; ++i) {
-            for (int j = 0; j < height; ++j) {
-                if (grid[i][j]) {
+        for (int i = 0; i < _width; ++i) 
+        {
+            for (int j = 0; j < _height; ++j) 
+            {
+                if (grid[i][j]) 
+                {
                     ++numWalls;
                 }
             }
@@ -174,8 +222,8 @@ public class Maze : MonoBehaviour {
         MeshFilter mf = gameObject.AddComponent<MeshFilter>();
         MeshRenderer mr = gameObject.AddComponent<MeshRenderer>();
         Material[] mats = new Material[2];
-        mats[0] = mazeMat;
-        mats[1] = floorMat;
+        mats[0] = _maze_mat;
+        mats[1] = _floor_mat;
         mr.materials = mats;
         Mesh mesh = new Mesh();
         mf.mesh = mesh;
@@ -189,15 +237,19 @@ public class Maze : MonoBehaviour {
 
         //generate independent wall pieces
         int curPiece = 0;
-        for (int i = 0; i < width; ++i) {
-            for (int r = 0; r < height; ++r) {
-                if (grid[i][r]) {
+        for (int i = 0; i < _width; ++i) 
+        {
+            for (int r = 0; r < _height; ++r) 
+            {
+                if (grid[i][r]) 
+                {
                     //construct verts (4 top, then 4 bottom)
                     for (int j = 0; j < 2; ++j) {
                         IDictionary<string,bool>  surWalls = getSurroundingWalls(i, r);
                         bool canShrinkHoriz = false;
                         bool canShrinkVert = false;
-                        if (Random.Range(0,100) < 20) {
+                        if (Random.Range(0,100) < 20) 
+                        {
                             canShrinkHoriz = !(surWalls["left"] || surWalls["right"]);
                             canShrinkVert = !(surWalls["top"] || surWalls["bottom"]);
                         }
@@ -211,7 +263,8 @@ public class Maze : MonoBehaviour {
                     //construct tris
                     int[,] pieceNumbers;
                     //define vertex orders for each of the 5 wall polys
-                    pieceNumbers = new int[,] {
+                    pieceNumbers = new int[,] 
+                    {
                         {
                             0,1,2,3
                         },
@@ -229,7 +282,8 @@ public class Maze : MonoBehaviour {
                         }
                     };
 
-                    for (int j = 0; j < 5; ++j) {
+                    for (int j = 0; j < 5; ++j) 
+                    {
                         tri[curPiece * 30 + 6 * j] = curPiece * 8 + pieceNumbers[j, 0];
                         tri[curPiece * 30 + 1 + 6 * j] = curPiece * 8 + +pieceNumbers[j, 2];
                         tri[curPiece * 30 + 2 + 6 * j] = curPiece * 8 + +pieceNumbers[j, 1];
@@ -239,7 +293,8 @@ public class Maze : MonoBehaviour {
                     }
 
                     //construct uvs
-                    for (int j = 0; j < 2; ++j) {
+                    for (int j = 0; j < 2; ++j)
+                    {
                         uv[curPiece * 8 + 4 * j] = new Vector2(j, j);
                         uv[curPiece * 8 + 1 + 4 * j] = new Vector2(1 - j, j);
                         uv[curPiece * 8 + 2 + 4 * j] = new Vector2(j, 1 - j);
@@ -253,9 +308,9 @@ public class Maze : MonoBehaviour {
 
         //generate floor verts
         vertices[vertices.Length - 4] = new Vector3(0, 0, 0);
-        vertices[vertices.Length - 3] = new Vector3(width, 0, 0);
-        vertices[vertices.Length - 2] = new Vector3(0, 0, height);
-        vertices[vertices.Length - 1] = new Vector3(width, 0, height);
+        vertices[vertices.Length - 3] = new Vector3(_width, 0, 0);
+        vertices[vertices.Length - 2] = new Vector3(0, 0, _height);
+        vertices[vertices.Length - 1] = new Vector3(_width, 0, _height);
 
         //generate floor tris
         floorTris[0] = vertices.Length - 4;
@@ -268,9 +323,9 @@ public class Maze : MonoBehaviour {
 
         //generate floor uvs
         uv[uv.Length - 4] = new Vector2(0, 0);
-        uv[uv.Length - 3] = new Vector2(0, height);
-        uv[uv.Length - 2] = new Vector2(width, 0);
-        uv[uv.Length - 1] = new Vector2(width, height);
+        uv[uv.Length - 3] = new Vector2(0, _height);
+        uv[uv.Length - 2] = new Vector2(_width, 0);
+        uv[uv.Length - 1] = new Vector2(_width, _height);
 
         //assign mesh vals to mesh component
         mesh.subMeshCount = 2;
@@ -284,22 +339,27 @@ public class Maze : MonoBehaviour {
         mf.mesh.RecalculateNormals();
     }
 
-    IDictionary<string, bool> getSurroundingWalls(int x, int y) {
+    IDictionary<string, bool> getSurroundingWalls(int x, int y) 
+    {
         IDictionary<string, bool> surDict = new Dictionary<string, bool>();
         surDict["left"] = false;
         surDict["right"] = false;
         surDict["top"] = false;
         surDict["bottom"] = false;
-        if (x != 0 && grid[x - 1][y]) {
+        if (x != 0 && grid[x - 1][y]) 
+        {
             surDict["left"] = true;
         }
-        if (x != width - 1 && grid[x + 1][y]) {
+        if (x != _width - 1 && grid[x + 1][y]) 
+        {
             surDict["right"] = true;
         }
-        if (y != 0 && grid[x][y-1]) {
+        if (y != 0 && grid[x][y-1]) 
+        {
             surDict["top"] = true;
         }
-        if (y != height - 1 && grid[x][y+1]) {
+        if (y != _height - 1 && grid[x][y+1]) 
+        {
             surDict["bottom"] = true;
         }
         return surDict;
